@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}My Question Sets{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>My Question Sets</h1>
+    
+    <div class="mb-4">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+    
+    {% if question_sets %}
+        <div class="row">
+            {% for set in question_sets %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ set.name }}</h5>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    Created: {{ set.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                </small>
+                            </p>
+                            <p class="card-text">
+                                <strong>Transcript:</strong> {{ set.transcript.title }}
+                            </p>
+                            <p class="card-text">
+                                <strong>Questions:</strong> {{ set.questions.count() }}
+                            </p>
+                            <a href="{{ url_for('questions.view_set', id=set.id) }}" class="btn btn-primary">View Questions</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            You don't have any question sets yet. Create one by going to a transcript and clicking "Create Question Set".
+        </div>
+        <a href="{{ url_for('transcripts.index') }}" class="btn btn-primary">View Transcripts</a>
+    {% endif %}
+</div>
+{% endblock %}

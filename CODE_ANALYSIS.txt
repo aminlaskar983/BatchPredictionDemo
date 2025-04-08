@@ -1,0 +1,158 @@
+# Gemini Batch Prediction - Code Analysis
+
+## Folder Structure
+
+```
+├── forms/                  # Form definitions for Flask-WTF
+├── routes/                 # Route blueprints for Flask
+├── templates/              # Jinja2 HTML templates
+│   ├── auth/               # Authentication templates
+│   ├── questions/          # Question management templates
+│   ├── transcripts/        # Transcript management templates
+│   ├── video_questions/    # Video Q&A templates
+├── app.py                  # Flask application setup
+├── batch_predictor.py      # Core batch processing logic
+├── context_cache.py        # Context caching implementation
+├── gemini_batch_processor.py # Gemini API client
+├── main.py                 # Application entry point
+├── models.py               # Database models
+├── output_formatter.py     # Results formatting
+├── transcript_handler.py   # Transcript processing
+├── video_transcript_extractor.py # YouTube transcript extraction
+```
+
+## Key Files Analysis
+
+### 1. app.py
+- Creates the Flask application with factory pattern
+- Configures SQLAlchemy, Flask-Login, Flask-Session
+- Handles environment variable loading
+- Registers blueprints for all routes
+- Initializes the database
+
+### 2. main.py
+- Entry point for both web and command-line modes
+- Contains batch prediction demonstration code
+- Runs the Flask application
+
+### 3. models.py
+- Defines SQLAlchemy models:
+  - User: Authentication and user management
+  - Transcript: Stores video transcripts
+  - QuestionSet: Groups of questions about a transcript
+  - Question: Individual questions and their answers
+- Uses SQLAlchemy relationships to connect models
+
+### 4. batch_predictor.py
+- Core logic for batch processing questions
+- Optimizes API usage by grouping related questions
+- Implements retry logic and rate limiting
+- Manages context windows for large transcripts
+- Uses AsyncIO for concurrent API calls
+
+### 5. context_cache.py
+- Implements an LRU (Least Recently Used) cache
+- Stores and reuses API contexts
+- Reduces redundant API calls for similar questions
+- Manages cache expiration and stats
+
+### 6. transcript_handler.py
+- Processes and formats transcripts
+- Chunks transcripts to fit API context windows
+- Finds relevant sections of transcripts for specific questions
+- Implements keyword and semantic relevance scoring
+
+### 7. gemini_batch_processor.py
+- Handles interactions with the Google Generative AI API
+- Manages API authentication and rate limiting
+- Implements retry logic for API errors
+- Provides a clean interface for the batch predictor
+
+### 8. video_transcript_extractor.py
+- Extracts transcripts from YouTube videos
+- Uses youtube_transcript_api library
+- Formats transcripts with timestamps
+- Handles error cases (disabled transcripts, etc.)
+
+### 9. output_formatter.py
+- Formats batch prediction results
+- Provides multiple output formats (rich tables, markdown, text)
+- Creates structured representation of results
+
+### 10. Routes Folder
+- auth.py: User authentication routes
+- main.py: Home and dashboard routes
+- questions.py: Question set management
+- transcripts.py: Transcript management
+- video_questions.py: Direct video Q&A
+
+### 11. Forms Folder
+- auth.py: Login and registration forms
+- questions.py: Question forms
+- transcripts.py: Transcript forms
+- video_questions.py: Video URL and questions form
+
+### 12. Templates Folder
+- Jinja2 templates organized by feature
+- Uses Bootstrap for responsive UI
+- Implements a dark theme
+
+## Workflow Details
+
+### Web Application Flow
+1. User registers/logs in
+2. User can:
+   - Create and manage transcripts
+   - Create question sets
+   - Process questions with Gemini API
+   - View results
+
+### Direct Video Q&A Flow
+1. User provides YouTube URL and questions
+2. System extracts transcript
+3. Questions are processed in batches
+4. Results are displayed with answers, context, and timestamps
+
+## Database Schema
+
+1. User
+   - id: Primary key
+   - username: Unique username
+   - email: Unique email
+   - password_hash: Hashed password
+   - created_at: Timestamp
+
+2. Transcript
+   - id: Primary key
+   - title: Transcript title
+   - content: Transcript text
+   - source_url: Video URL
+   - created_at: Timestamp
+   - user_id: Foreign key to User
+
+3. QuestionSet
+   - id: Primary key
+   - name: Set name
+   - created_at: Timestamp
+   - user_id: Foreign key to User
+   - transcript_id: Foreign key to Transcript
+
+4. Question
+   - id: Primary key
+   - content: Question text
+   - answer: Answer text
+   - context_used: Relevant context from transcript
+   - timestamp: Video timestamp
+   - created_at: Timestamp
+   - processed_at: When processed by API
+   - response_metadata: JSON metadata
+   - question_set_id: Foreign key to QuestionSet
+
+## Batch Processing Optimization
+
+The batch processing implementation is optimized for:
+1. Minimizing API calls through context reuse
+2. Parallelizing requests with rate limiting
+3. Grouping related questions to share context
+4. Intelligent context retrieval from large transcripts
+5. Caching to reuse previous results

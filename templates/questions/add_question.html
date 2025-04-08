@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Add Question{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Add Question</h1>
+    
+    <div class="mb-4">
+        <a href="{{ url_for('questions.view_set', id=question_set.id) }}" class="btn btn-secondary">Back to Question Set</a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Question Set Information</h5>
+        </div>
+        <div class="card-body">
+            <h6>{{ question_set.name }}</h6>
+            <p><strong>Transcript:</strong> {{ question_set.transcript.title }}</p>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>New Question</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-3">
+                    {{ form.content.label(class="form-label") }}
+                    {{ form.content(class="form-control", rows=3) }}
+                    {% for error in form.content.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                    <div class="form-text">Enter a question about the transcript content.</div>
+                </div>
+                
+                {{ form.submit(class="btn btn-primary") }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

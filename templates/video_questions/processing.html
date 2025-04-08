@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Processing Questions...{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Processing Your Questions</h5>
+                </div>
+                <div class="card-body text-center p-5">
+                    <div class="spinner-border text-primary mb-4" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    
+                    <h4 class="mb-3">Please wait while we process your questions</h4>
+                    <p class="mb-4">This may take a few moments depending on the number of questions and the length of the video transcript.</p>
+                    
+                    <div class="progress mb-4">
+                        <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    
+                    <p class="text-muted" id="status-message">Initializing...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // This would be improved with WebSockets for real-time progress updates
+    let questionCount = {{ questions|length }};
+    let processedCount = 0;
+    let statusMessages = [
+        "Initializing...",
+        "Extracting transcript...",
+        "Analyzing questions...",
+        "Processing batch 1...",
+        "Almost done...",
+        "Finalizing results..."
+    ];
+    
+    function updateProgress() {
+        processedCount++;
+        let percentage = Math.min(Math.round((processedCount / (statusMessages.length + 1)) * 100), 100);
+        
+        document.getElementById('progress-bar').style.width = percentage + '%';
+        
+        if (processedCount < statusMessages.length) {
+            document.getElementById('status-message').textContent = statusMessages[processedCount];
+            setTimeout(updateProgress, 1500);
+        } else {
+            document.getElementById('status-message').textContent = "Complete! Redirecting...";
+            window.location.href = "{{ redirect_url }}";
+        }
+    }
+    
+    // Start the progress animation
+    setTimeout(updateProgress, 1000);
+</script>
+{% endblock %}

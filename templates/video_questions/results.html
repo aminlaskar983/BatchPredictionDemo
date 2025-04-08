@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Video Q&A Results{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Video Q&A Results</h1>
+    
+    <div class="mb-4">
+        <a href="{{ url_for('video_questions.index') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> New Video Q&A
+        </a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">{{ transcript.title }}</h4>
+                {% if transcript.source_url %}
+                <a href="{{ transcript.source_url }}" target="_blank" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-external-link-alt"></i> Watch Video
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="mb-0"><strong>Question Set:</strong> {{ question_set.name }}</p>
+            <p class="text-muted mb-0 mt-2">Created {{ question_set.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="accordion" id="questionsAccordion">
+                {% for question in questions %}
+                <div class="accordion-item mb-3 border">
+                    <h2 class="accordion-header" id="heading{{ question.id }}">
+                        <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ question.id }}" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="collapse{{ question.id }}">
+                            <div class="d-flex align-items-center w-100">
+                                <span class="me-auto">{{ question.content }}</span>
+                                {% if question.timestamp %}
+                                <span class="badge bg-info text-white ms-2">{{ question.timestamp }}</span>
+                                {% endif %}
+                            </div>
+                        </button>
+                    </h2>
+                    <div id="collapse{{ question.id }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="heading{{ question.id }}" data-bs-parent="#questionsAccordion">
+                        <div class="accordion-body">
+                            <div class="mb-4">
+                                <h5>Answer</h5>
+                                <div class="p-3 border rounded bg-dark">
+                                    {{ question.answer|safe }}
+                                </div>
+                            </div>
+                            
+                            {% if question.context_used %}
+                            <div class="mb-0">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-2">Relevant Context Used</h5>
+                                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#contextCollapse{{ question.id }}">
+                                        <i class="fas fa-code"></i> Show/Hide Context
+                                    </button>
+                                </div>
+                                <div class="collapse" id="contextCollapse{{ question.id }}">
+                                    <div class="p-3 border rounded bg-dark text-white">
+                                        <pre class="mb-0" style="white-space: pre-wrap;">{{ question.context_used }}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

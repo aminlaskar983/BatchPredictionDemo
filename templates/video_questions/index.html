@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Ask Questions About a Video{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Ask Questions About a Video</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Direct Video Q&A</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        Enter a YouTube video URL and ask multiple questions about its content. 
+                        The system will automatically extract the transcript and process your questions.
+                    </p>
+                    
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.video_url.label(class="form-label") }}
+                            {{ form.video_url(class="form-control", placeholder="https://www.youtube.com/watch?v=...") }}
+                            {% for error in form.video_url.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                            <div class="form-text">
+                                Supports standard YouTube URLs and shortened youtu.be links
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.questions.label(class="form-label") }}
+                            {{ form.questions(class="form-control", rows=8, placeholder="Enter one question per line, e.g.:\nWhat are the main topics discussed?\nWhen was the concept first introduced?\nWho are the key people mentioned?") }}
+                            {% for error in form.questions.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                            <div class="form-text">
+                                Enter one question per line. The questions will be processed as a batch.
+                            </div>
+                        </div>
+                        
+                        {{ form.submit(class="btn btn-primary") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">How It Works</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2">Enter a YouTube video URL</li>
+                        <li class="mb-2">Type multiple questions about the video content (one per line)</li>
+                        <li class="mb-2">The system extracts the transcript automatically</li>
+                        <li class="mb-2">Your questions are processed using Gemini AI</li>
+                        <li class="mb-2">View detailed answers with relevant video context</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Tips for Better Results</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li class="mb-2">Ask specific questions rather than general ones</li>
+                        <li class="mb-2">Group related questions together</li>
+                        <li class="mb-2">For videos with timestamps, questions about specific times work well</li>
+                        <li class="mb-2">The system works best with videos that have clear spoken content</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

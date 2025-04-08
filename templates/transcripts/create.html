@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Create Transcript{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Create Transcript</h1>
+    
+    <div class="mb-4">
+        <a href="{{ url_for('transcripts.index') }}" class="btn btn-secondary">Back to Transcripts</a>
+    </div>
+    
+    {% if video_extraction %}
+    <div class="alert alert-success mb-4">
+        <i class="fas fa-check-circle"></i> <strong>Transcript extracted successfully!</strong>
+        <p class="mb-0 mt-2">Review the extracted content below and make any necessary edits before saving.</p>
+    </div>
+    {% endif %}
+    
+    <div class="card">
+        <div class="card-header">
+            <h5>New Transcript</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-3">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control") }}
+                    {% for error in form.title.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.source_url.label(class="form-label") }}
+                    {{ form.source_url(class="form-control") }}
+                    {% for error in form.source_url.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                    <div class="form-text">Optional: URL to the source video</div>
+                </div>
+                
+                <div class="mb-3">
+                    {{ form.content.label(class="form-label") }}
+                    {{ form.content(class="form-control", rows=15) }}
+                    {% for error in form.content.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                    <div class="form-text">
+                        {% if video_extraction %}
+                        The content includes timestamps from the video. You can edit it as needed before saving.
+                        {% else %}
+                        Paste the full transcript of the video here
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {{ form.submit(class="btn btn-primary") }}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

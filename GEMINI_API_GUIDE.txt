@@ -1,0 +1,124 @@
+# Gemini API Setup Guide
+
+This guide explains how to set up and use the Google Gemini API with this project.
+
+## What is Gemini?
+
+Gemini is Google's most capable AI model, designed to be multimodal, which means it can understand and reason about text, images, code, and more in a natural and integrated way.
+
+## Getting Started with Gemini API
+
+### 1. Create a Google AI Studio Account
+
+If you don't already have one:
+1. Visit https://makersuite.google.com/
+2. Sign in with your Google account
+3. Accept the terms of service
+
+### 2. Generate an API Key
+
+1. Go to https://makersuite.google.com/app/apikey
+2. Click "Create API Key"
+3. Copy your new API key - you'll need it for the application
+
+### 3. Add to Your Environment
+
+Add the API key to your .env file:
+```
+GEMINI_API_KEY=your_api_key_here
+```
+
+## Understanding the Gemini Models
+
+This application primarily uses:
+- **gemini-1.5-pro**: The most capable model with a large context window (up to 1M tokens)
+
+## API Usage in the Project
+
+### 1. gemini_batch_processor.py
+
+This file contains the GeminiBatchProcessor class which handles:
+- API authentication
+- Model selection
+- Request formatting
+- Response parsing
+- Error handling and retries
+- Rate limiting
+
+### 2. batch_predictor.py
+
+This file uses the GeminiBatchProcessor to:
+- Process batches of questions
+- Manage context windows
+- Group related questions
+- Handle concurrent API calls
+
+### 3. context_cache.py
+
+This optimizes API usage by:
+- Caching API responses for reuse
+- Reducing redundant API calls
+- Managing cache expiration
+
+## API Quotas and Limits
+
+The Gemini API has usage limits:
+- Free tier: Limited queries per minute/day
+- Rate limits: Requests per minute per API key
+- Context window: Maximum input size per request
+
+The application implements:
+- Rate limiting logic with delays between batches
+- Retry mechanism with exponential backoff
+- Chunking to manage context window size
+
+## Troubleshooting API Issues
+
+### Common Errors
+
+1. **API Key Invalid**
+   - Verify your API key is correct
+   - Check for whitespace or copying errors
+   - Generate a new key if necessary
+
+2. **Rate Limit Exceeded**
+   - The application will automatically retry with backoff
+   - Reduce the number of questions in batch processing
+   - Wait a few minutes before trying again
+
+3. **Context Length Exceeded**
+   - The transcript handler automatically chunks long transcripts
+   - If you still encounter this, try a shorter transcript
+
+4. **Model Not Available**
+   - Check if the model is available in your region
+   - Verify your API key has access to the model
+
+## Using the API Efficiently
+
+To optimize your API usage:
+1. Group related questions together
+2. Reuse the same transcript for multiple question sets
+3. Keep transcripts focused on specific topics
+4. Use the caching mechanism to avoid redundant calls
+
+## API Response Structure
+
+The API returns structured data that includes:
+- Answer text
+- Confidence scores
+- Context used
+- Metadata for debugging
+
+## API Security Best Practices
+
+1. Never expose your API key in client-side code
+2. Store your API key securely in .env or environment variables
+3. Consider implementing API key rotation
+4. Monitor your API usage regularly
+
+## Additional Resources
+
+- Google AI Studio documentation: https://ai.google.dev/docs
+- Gemini API reference: https://ai.google.dev/api/rest/v1beta/models
+- Sample prompts: https://ai.google.dev/tutorials/prompt_library

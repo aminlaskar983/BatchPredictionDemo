@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Gemini Batch Prediction{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Dashboard</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">My Transcripts</h5>
+                    <p class="card-text">Manage your video transcripts for AI analysis.</p>
+                    <a href="{{ url_for('transcripts.index') }}" class="btn btn-primary">View Transcripts</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">My Question Sets</h5>
+                    <p class="card-text">Create and manage sets of questions about your transcripts.</p>
+                    <a href="{{ url_for('questions.sets') }}" class="btn btn-primary">View Question Sets</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-info">
+                <div class="card-header bg-info text-white">
+                    <span class="badge bg-dark">New Feature</span> Direct Video Q&A
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Ask questions about YouTube videos without manually extracting transcripts.</p>
+                    <ul class="mb-3">
+                        <li>Automatic transcript extraction</li>
+                        <li>Process multiple questions at once</li>
+                        <li>Get AI-powered answers instantly</li>
+                    </ul>
+                    <a href="{{ url_for('video_questions.index') }}" class="btn btn-outline-info">Try it now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Extract Transcript from Video{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-10 offset-md-1">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="mb-0">Extract Transcript from Video</h2>
+        </div>
+        <div class="card-body">
+          <p class="lead">
+            Enter a YouTube video URL to automatically extract its transcript.
+          </p>
+          
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> Currently supported platforms:
+            <ul class="mb-0 mt-2">
+              <li><strong>YouTube</strong> - Both standard and shortened URLs are supported</li>
+            </ul>
+          </div>
+          
+          <form method="POST" action="{{ url_for('transcripts.extract_from_video') }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+              {{ form.video_url.label(class="form-label") }}
+              {{ form.video_url(class="form-control", placeholder="https://www.youtube.com/watch?v=VIDEO_ID") }}
+              {% for error in form.video_url.errors %}
+                <div class="text-danger">{{ error }}</div>
+              {% endfor %}
+              <small class="text-muted">
+                Example: https://www.youtube.com/watch?v=VIDEO_ID or https://youtu.be/VIDEO_ID
+              </small>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+              <a href="{{ url_for('transcripts.index') }}" class="btn btn-outline-secondary">Cancel</a>
+              {{ form.submit(class="btn btn-primary") }}
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="mb-0">Alternative Options</h3>
+        </div>
+        <div class="card-body">
+          <p>If you already have a transcript, you can:</p>
+          <div class="d-grid gap-2">
+            <a href="{{ url_for('transcripts.create') }}" class="btn btn-outline-primary">
+              Create Transcript Manually
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
